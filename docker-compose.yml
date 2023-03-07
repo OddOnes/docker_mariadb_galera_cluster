@@ -1,0 +1,74 @@
+version: "3"
+services:
+    db1:
+        build: ./
+        hostname: db1
+        container_name: db1
+        privileged: true
+        entrypoint: /root/maria_init.sh
+        env_file:
+          - galera_cluster.env
+        environment:
+          - MY_IP=172.30.0.11
+        volumes:
+          - ./mount/maria_init.sh:/root/maria_init.sh
+        networks:
+          app_net:
+            ipv4_address: 172.30.0.11
+        
+    db2:
+        build: ./
+        hostname: db2
+        container_name: db2
+        privileged: true
+        entrypoint: /root/maria_init.sh
+        env_file:
+          - galera_cluster.env
+        environment:
+          - MY_IP=172.30.0.12
+        volumes:
+          - ./mount/maria_init.sh:/root/maria_init.sh 
+        networks:
+          app_net:
+            ipv4_address: 172.30.0.12
+          
+    db3:
+        build: ./
+        hostname: db3
+        container_name: db3
+        privileged: true
+        entrypoint: /root/maria_init.sh
+        env_file:
+          - galera_cluster.env
+        environment:
+          - MY_IP=172.30.0.13
+        volumes:
+          - ./mount/maria_init.sh:/root/maria_init.sh
+        networks:
+          app_net:
+            ipv4_address: 172.30.0.13
+          
+    arbitrator:
+        build: ./
+        hostname: arbitrator
+        container_name: arbitrator
+        privileged: true
+        entrypoint: /root/maria_arbitrator_init.sh
+        env_file:
+          - galera_cluster.env
+        environment:
+          - MY_IP=172.30.0.14
+        volumes:
+          - ./mount/maria_arbitrator_init.sh:/root/maria_arbitrator_init.sh
+        networks:
+          app_net:
+            ipv4_address: 172.30.0.14
+          
+
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+     driver: default
+     config:
+       - subnet: 172.30.0.0/24
